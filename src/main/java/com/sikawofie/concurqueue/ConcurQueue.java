@@ -1,3 +1,11 @@
+package com.sikawofie.concurqueue;
+
+import com.sikawofie.concurqueue.consumer.Worker;
+import com.sikawofie.concurqueue.entity.Task;
+import com.sikawofie.concurqueue.monitor.Monitor;
+import com.sikawofie.concurqueue.producer.Producer;
+import com.sikawofie.concurqueue.utils.TaskStateTracker;
+
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -14,27 +22,23 @@ public class ConcurQueue {
     private final Monitor monitor;
 
     public ConcurQueue() {
-        // Create priority-based task queue with capacity
         this.taskQueue = new PriorityBlockingQueue<>(QUEUE_CAPACITY);
         this.stateTracker = new TaskStateTracker();
 
-        // Create producers
         this.producerExecutor = Executors.newFixedThreadPool(PRODUCER_COUNT, new NamedThreadFactory("Producer"));
         for (int i = 1; i <= PRODUCER_COUNT; i++) {
             producerExecutor.submit(new Producer("Producer-" + i, taskQueue, stateTracker));
         }
 
-        // Create worker pool with custom thread factory
         this.workerExecutor = Executors.newFixedThreadPool(WORKER_COUNT, new NamedThreadFactory("Worker"));
         for (int i = 1; i <= WORKER_COUNT; i++) {
             workerExecutor.submit(new Worker("Worker-" + i, taskQueue, stateTracker));
         }
 
-        // Start monitor in a separate thread
+
         this.monitor = new Monitor(taskQueue, workerExecutor, stateTracker);
         new Thread(monitor, "Monitor").start();
 
-        // Add shutdown hook for graceful shutdown
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown-Hook"));
 
         System.out.printf("""
@@ -54,20 +58,18 @@ public class ConcurQueue {
             shutdown();
         }
 
-        // Step 1: Shutdown producers (no new tasks)
+
         producerExecutor.shutdownNow();
         System.out.println("Producers shutdown requested.");
 
-        // Step 2: Shutdown monitor
         monitor.shutdown();
         System.out.println("Monitor shutdown requested.");
 
-        // Step 3: Shutdown workers after current tasks
+
         workerExecutor.shutdown();
         System.out.println("Worker shutdown requested. Waiting for current tasks to complete...");
 
         try {
-            // Wait for workers to finish with timeout
             if (!workerExecutor.awaitTermination(30, TimeUnit.SECONDS)) {
                 System.out.println("Forcing worker shutdown after timeout...");
                 workerExecutor.shutdownNow();
@@ -78,7 +80,6 @@ public class ConcurQueue {
             Thread.currentThread().interrupt();
         }
 
-        // Final status report
         System.out.println("\n=== Final System Status ===");
         System.out.printf("Total tasks submitted: %d%n", stateTracker.getTotalTasksSubmitted());
         System.out.printf("Tasks processed: %d (%.1f%%)%n",
@@ -100,7 +101,6 @@ public class ConcurQueue {
         new ConcurQueue();
     }
 
-    // Custom thread factory for named threads
     private static class NamedThreadFactory implements ThreadFactory {
         private final String namePrefix;
         private final AtomicInteger threadNumber = new AtomicInteger(1);

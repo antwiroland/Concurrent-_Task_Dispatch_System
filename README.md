@@ -1,4 +1,4 @@
-# ConcurQueue - Multithreaded Task Dispatch System
+# com.sikawofie.concurqueue.ConcurQueue - Multithreaded com.sikawofie.concurqueue.entity.Task Dispatch System
 
 ![Java](https://img.shields.io/badge/Java-17+-blue)
 ![Concurrency](https://img.shields.io/badge/Concurrency-Patterns-green)
@@ -20,7 +20,7 @@
 ## Overview
 
 A Java-based concurrent task processing system demonstrating:
-- Producer-consumer pattern
+- com.sikawofie.concurqueue.producer.Producer-com.sikawofie.concurqueue.consumer pattern
 - Priority-based scheduling
 - Fault tolerance with retries
 - Real-time monitoring
@@ -41,11 +41,11 @@ A Java-based concurrent task processing system demonstrating:
 
 
 # Features
-- Concurrent producer-consumer model
-- Task priority handling
+- Concurrent com.sikawofie.concurqueue.producer-com.sikawofie.concurqueue.consumer model
+- com.sikawofie.concurqueue.entity.Task priority handling
 - Fault handling with retry logic
 - Configurable queue capacity and worker count
-- Periodic health metrics via monitor
+- Periodic health metrics via com.sikawofie.concurqueue.monitor
 - Easy to extend with plugins and REST APIs
 
 ## Installation
@@ -69,10 +69,10 @@ java -jar target/concurqueue.jar \
 # Monitoring
 ## Console Output Example
 ````
-14:30:45 [Monitor] INFO - === System Status ===
-14:30:45 [Monitor] INFO - Queue: 15/100 (15%)
-14:30:45 [Monitor] INFO - Throughput: 42 tasks/sec
-14:30:45 [Monitor] INFO - Avg Latency: 236ms
+14:30:45 [com.sikawofie.concurqueue.monitor.Monitor] INFO - === System Status ===
+14:30:45 [com.sikawofie.concurqueue.monitor.Monitor] INFO - Queue: 15/100 (15%)
+14:30:45 [com.sikawofie.concurqueue.monitor.Monitor] INFO - Throughput: 42 tasks/sec
+14:30:45 [com.sikawofie.concurqueue.monitor.Monitor] INFO - Avg Latency: 236ms
 
 ````
 ## JSON Export Sample
@@ -87,22 +87,25 @@ java -jar target/concurqueue.jar \
 # Performance
 ### Metrics Dashboard
 
-    title Task Processing Timeline
+    title com.sikawofie.concurqueue.entity.Task Processing Timeline
     dateFormat  HH:mm:ss
     section Workers
-    Worker 1  :a1, 14:30:00, 145ms
-    Worker 2  :a2, after a1, 210ms
-    Worker 3  :a3, after a2, 98ms
+    com.sikawofie.concurqueue.consumer.Worker 1  :a1, 14:30:00, 145ms
+    com.sikawofie.concurqueue.consumer.Worker 2  :a2, after a1, 210ms
+    com.sikawofie.concurqueue.consumer.Worker 3  :a3, after a2, 98ms
 
 
 ## Extending the System
 ### Database Integration
+
 ```java
+import com.sikawofie.concurqueue.entity.Task;
+
 public class DatabaseExporter implements TaskListener {
     public void onTaskComplete(Task t) {
         jdbcTemplate.update(
-            "INSERT INTO tasks (id, status, processing_time) VALUES (?, ?, ?)",
-            t.getId(), t.getStatus(), t.getProcessingTime()
+                "INSERT INTO tasks (id, status, processing_time) VALUES (?, ?, ?)",
+                t.getId(), t.getStatus(), t.getProcessingTime()
         );
     }
 }
@@ -110,7 +113,10 @@ public class DatabaseExporter implements TaskListener {
 ```
 
 ## REST API Integration
+
 ```java
+import com.sikawofie.concurqueue.entity.Task;
+
 @RestController
 public class TaskController {
     @PostMapping("/tasks")

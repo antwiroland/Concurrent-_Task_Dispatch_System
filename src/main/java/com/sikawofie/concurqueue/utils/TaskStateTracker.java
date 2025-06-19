@@ -1,3 +1,8 @@
+package com.sikawofie.concurqueue.utils;
+
+import com.sikawofie.concurqueue.entity.Task;
+import com.sikawofie.concurqueue.enums.TaskStatus;
+
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;

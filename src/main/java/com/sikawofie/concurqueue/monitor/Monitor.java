@@ -1,8 +1,13 @@
+package com.sikawofie.concurqueue.monitor;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.sikawofie.concurqueue.entity.Task;
+import com.sikawofie.concurqueue.enums.TaskStatus;
+import com.sikawofie.concurqueue.utils.TaskStateTracker;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -72,7 +77,7 @@ public class Monitor implements Runnable {
         System.out.printf("Tasks retried: %d%n", stateTracker.getTasksRetriedCount());
         System.out.printf("Avg processing time: %.1fms%n", stateTracker.getAverageProcessingTime());
 
-        // Thread pool status
+
         if (executorService.isShutdown()) {
             System.out.println("Executor service: Shutting down");
         } else if (executorService.isTerminated()) {
@@ -91,10 +96,9 @@ public class Monitor implements Runnable {
         stateTracker.getAllTasks().forEach((id, task) -> {
             TaskStatus status = stateTracker.getTaskStatus(id);
             if (status == TaskStatus.PROCESSING) {
-                // Check if task has been processing for too long (> 10s)
                 long processingTime = now - task.getCreatedTimestamp().toEpochMilli();
                 if (processingTime > 10000) {
-                    System.out.printf("Warning: Task %s has been processing for %dms%n",
+                    System.out.printf("Task %s has been processing for %dms%n",
                             task, processingTime);
                 }
             }

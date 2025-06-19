@@ -1,3 +1,5 @@
+package com.sikawofie.concurqueue.entity;
+
 import lombok.Getter;
 
 import java.time.Instant;

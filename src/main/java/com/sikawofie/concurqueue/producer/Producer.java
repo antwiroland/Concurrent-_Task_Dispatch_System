@@ -1,6 +1,10 @@
+package com.sikawofie.concurqueue.producer;
+
+import com.sikawofie.concurqueue.entity.Task;
+import com.sikawofie.concurqueue.utils.TaskStateTracker;
+
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Producer implements Runnable {
@@ -43,7 +47,7 @@ public class Producer implements Runnable {
                             random.nextInt(3) + 8;
 
                     String payload = String.format("%s-%d-data-%d", name, taskCounter.get(), random.nextInt(1000));
-                    Task task = new Task(name + "-Task-" + taskCounter.incrementAndGet(), priority, payload);
+                    Task task = new Task(name + "Task-" + taskCounter.incrementAndGet(), priority, payload);
 
                     stateTracker.registerNewTask(task);
                     taskQueue.put(task);

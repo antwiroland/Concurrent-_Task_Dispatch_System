@@ -1,3 +1,9 @@
+package com.sikawofie.concurqueue.consumer;
+
+import com.sikawofie.concurqueue.entity.Task;
+import com.sikawofie.concurqueue.enums.TaskStatus;
+import com.sikawofie.concurqueue.utils.TaskStateTracker;
+
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 
@@ -53,7 +59,7 @@ public class Worker implements Runnable {
             }
         } catch (InterruptedException e) {
             System.out.printf("[%s] Interrupted while processing %s. Re-queueing.%n", name, task);
-            taskQueue.offer(task); // Re-queue the task
+            taskQueue.offer(task);
             Thread.currentThread().interrupt();
         } catch (Exception e) {
             System.out.printf("[%s] Error processing %s: %s%n", name, task, e.getMessage());

@@ -1,5 +1,5 @@
 <archetype>
-  <id>ConcurQueue</id>
+  <id>com.sikawofie.concurqueue.ConcurQueue</id>
   <sources>
     <source>src/main/java/App.java</source>
   </sources>

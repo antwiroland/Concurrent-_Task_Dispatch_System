@@ -1,3 +1,5 @@
+package com.sikawofie.concurqueue.enums;
+
 public enum TaskStatus {
     SUBMITTED,
     PROCESSING,

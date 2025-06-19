@@ -4,7 +4,7 @@
   <groupId>org.sikawofie</groupId>
   <artifactId>ConcurQueue</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>Archetype - ConcurQueue</name>
+  <name>Archetype - com.sikawofie.concurqueue.ConcurQueue</name>
   <url>http://maven.apache.org</url>
 
   <dependencies>
@@ -37,7 +37,7 @@
             <configuration>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>ConcurQueue</mainClass>
+                  <mainClass>com.sikawofie.concurqueue.ConcurQueue</mainClass>
                 </transformer>
               </transformers>
             </configuration>
