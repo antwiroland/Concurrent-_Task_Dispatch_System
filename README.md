@@ -54,21 +54,17 @@ A Java-based concurrent task processing system demonstrating:
 - Maven 3.6+
 
 ## Clone Repository
-```
 git clone https://github.com/yourusername/concurqueue.git
 cd concurqueue
-```
 
 ### Build Project
-```mermaid
 mvn clean package
-```
+
 ## Run Application
-```mermaid
 java -jar target/concurqueue.jar \
     -Dproducer.count=5 \
     -Dqueue.capacity=200
-```
+
 
 # Monitoring
 ## Console Output Example
