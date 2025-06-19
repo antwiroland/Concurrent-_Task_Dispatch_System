@@ -80,7 +80,6 @@ java -jar target/concurqueue.jar \
 
 ````
 ## JSON Export Sample
-```mermaid
 {
   "taskId": "9d75f78a-b44c-4f8c-8fcc-6d245a4ec48d",
   "status": "COMPLETED",
@@ -88,18 +87,17 @@ java -jar target/concurqueue.jar \
   "retries": 0
 }
 
-```
 
 # Performance
 ### Metrics Dashboard
-```
+
     title Task Processing Timeline
     dateFormat  HH:mm:ss
     section Workers
     Worker 1  :a1, 14:30:00, 145ms
     Worker 2  :a2, after a1, 210ms
     Worker 3  :a3, after a2, 98ms
-```
+
 
 ## Extending the System
 ### Database Integration
