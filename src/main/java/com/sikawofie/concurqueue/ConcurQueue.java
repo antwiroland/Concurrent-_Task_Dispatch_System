@@ -5,11 +5,14 @@ import com.sikawofie.concurqueue.entity.Task;
 import com.sikawofie.concurqueue.monitor.Monitor;
 import com.sikawofie.concurqueue.producer.Producer;
 import com.sikawofie.concurqueue.utils.TaskStateTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConcurQueue {
+    private static final Logger logger = LoggerFactory.getLogger(ConcurQueue.class);
     private static final int PRODUCER_COUNT = 3;
     private static final int WORKER_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int QUEUE_CAPACITY = 100;
@@ -35,62 +38,59 @@ public class ConcurQueue {
             workerExecutor.submit(new Worker("Worker-" + i, taskQueue, stateTracker));
         }
 
-
         this.monitor = new Monitor(taskQueue, workerExecutor, stateTracker);
         new Thread(monitor, "Monitor").start();
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Shutdown-Hook"));
 
-        System.out.printf("""
+        logger.info("""
             ConcurQueue started with:
-            - %d producer threads
-            - %d worker threads
-            - Queue capacity: %d
+            - {} producer threads
+            - {} worker threads
+            - Queue capacity: {}
             Press Ctrl+C to shutdown...
-            %n""", PRODUCER_COUNT, WORKER_COUNT, QUEUE_CAPACITY);
+            """, PRODUCER_COUNT, WORKER_COUNT, QUEUE_CAPACITY);
     }
 
     private void shutdown() {
-        System.out.println("\nInitiating shutdown sequence...");
+        logger.info("\nInitiating shutdown sequence...");
 
         if (stateTracker.getTasksProcessedCount() >= MAX_TASKS) {
-            System.out.println("Reached max tasks. Shutting down...");
+            logger.info("Reached max tasks. Shutting down...");
             shutdown();
         }
 
-
         producerExecutor.shutdownNow();
-        System.out.println("Producers shutdown requested.");
+        logger.info("Producers shutdown requested.");
 
         monitor.shutdown();
-        System.out.println("Monitor shutdown requested.");
-
+        logger.info("Monitor shutdown requested.");
 
         workerExecutor.shutdown();
-        System.out.println("Worker shutdown requested. Waiting for current tasks to complete...");
+        logger.info("Worker shutdown requested. Waiting for current tasks to complete...");
 
         try {
             if (!workerExecutor.awaitTermination(30, TimeUnit.SECONDS)) {
-                System.out.println("Forcing worker shutdown after timeout...");
+                logger.warn("Forcing worker shutdown after timeout...");
                 workerExecutor.shutdownNow();
             }
         } catch (InterruptedException e) {
-            System.out.println("Shutdown interrupted. Forcing immediate shutdown.");
+            logger.warn("Shutdown interrupted. Forcing immediate shutdown.");
             workerExecutor.shutdownNow();
             Thread.currentThread().interrupt();
         }
 
-        System.out.println("\n=== Final System Status ===");
-        System.out.printf("Total tasks submitted: %d%n", stateTracker.getTotalTasksSubmitted());
-        System.out.printf("Tasks processed: %d (%.1f%%)%n",
+        logger.info("\n=== Final System Status ===");
+        logger.info("Total tasks submitted: {}", stateTracker.getTotalTasksSubmitted());
+        logger.info("Tasks processed: {} ({}%)",
                 stateTracker.getTasksProcessedCount(),
                 percentage(stateTracker.getTasksProcessedCount(), stateTracker.getTotalTasksSubmitted()));
-        System.out.printf("Tasks failed: %d (%.1f%%)%n",
+        logger.info("Tasks failed: {} ({}%)",
                 stateTracker.getTasksFailedCount(),
                 percentage(stateTracker.getTasksFailedCount(), stateTracker.getTotalTasksSubmitted()));
-        System.out.printf("Tasks retried: %d%n", stateTracker.getTasksRetriedCount());
-        System.out.printf("Average processing time: %.1fms%n", stateTracker.getAverageProcessingTime());
-        System.out.println("Shutdown complete.");
+        logger.info("Tasks retried: {}", stateTracker.getTasksRetriedCount());
+        logger.info("Average processing time: {}ms", stateTracker.getAverageProcessingTime());
+        logger.info("Shutdown complete.");
     }
 
     private double percentage(int part, int whole) {
