@@ -66,6 +66,10 @@ public class TaskStateTracker {
         return processed > 0 ? (double) totalProcessingTime.get() / processed : 0;
     }
 
+    public void incrementTasksRetried() {
+        tasksRetriedCount.incrementAndGet();
+    }
+
     public ConcurrentHashMap<UUID, Task> getAllTasks() {
         return new ConcurrentHashMap<>(tasks);
     }
