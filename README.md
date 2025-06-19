@@ -54,7 +54,7 @@ A Java-based concurrent task processing system demonstrating:
 - Maven 3.6+
 
 ## Clone Repository
-```mermaid
+```
 git clone https://github.com/yourusername/concurqueue.git
 cd concurqueue
 ```
@@ -72,7 +72,7 @@ java -jar target/concurqueue.jar \
 
 # Monitoring
 ## Console Output Example
-````mermaid
+````
 14:30:45 [Monitor] INFO - === System Status ===
 14:30:45 [Monitor] INFO - Queue: 15/100 (15%)
 14:30:45 [Monitor] INFO - Throughput: 42 tasks/sec
@@ -92,7 +92,7 @@ java -jar target/concurqueue.jar \
 
 # Performance
 ### Metrics Dashboard
-```mermaid
+```
     title Task Processing Timeline
     dateFormat  HH:mm:ss
     section Workers
