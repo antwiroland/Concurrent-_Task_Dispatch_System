@@ -1,4 +1,4 @@
-# com.sikawofie.concurqueue.ConcurQueue - Multithreaded com.sikawofie.concurqueue.entity.Task Dispatch System
+# Concurrent Task Dispatch System
 
 ![Java](https://img.shields.io/badge/Java-17+-blue)
 ![Concurrency](https://img.shields.io/badge/Concurrency-Patterns-green)
